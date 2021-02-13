@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace EmployeesAndCompanies.Domain.Entities
 {
     public class Employee : BaseEntity
     {
-        [StringLength(30)] 
-        public string Name1 { get; set; }
-        
-        [StringLength(30)]
-        public string Name2 { get; set; }
-        
-        [StringLength(30)] 
-        public string Name3 { get; set; }
-        
-        [DataType(DataType.DateTime)] 
+        public static readonly Employee Empty = new();
+        public string Name1 { get; set; } = string.Empty;
+        public string Name2 { get; set; } = string.Empty;
+        public string Name3 { get; set; } = string.Empty;
         public DateTime EmploymentDate { get; set; }
-        
-        public IEnumerable<Post> Posts { get; set; }
-        public IEnumerable<Post> Companies { get; set; }
+
+        public IEnumerable<Post> Posts { get; set; } = Enumerable.Empty<Post>();
+        public IEnumerable<Post> Companies { get; set; } = Enumerable.Empty<Post>();
+
+        public override string ToString() =>
+            $"{Id}. {Name1.Trim()} {Name2.Trim()} {Name3.Trim()} {EmploymentDate.ToShortDateString()}";
     }
 }

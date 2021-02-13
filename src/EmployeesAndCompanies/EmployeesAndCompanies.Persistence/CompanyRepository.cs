@@ -34,7 +34,7 @@ namespace EmployeesAndCompanies.Persistence
             return entity;
         }
 
-        public async Task<Company> UpdateAsync(Company entity)
+        public async Task<bool> UpdateAsync(Company entity)
         {
             var query = $"update {CompanyTable.TableName} set " +
                         $"{CompanyTable.Name} = @name, " +
@@ -46,32 +46,20 @@ namespace EmployeesAndCompanies.Persistence
             {
                 new("@name", entity.Name),
                 new("@businessId", entity.BusinessEntityId),
-                new("@size", entity.Size)
+                new("@size", entity.Size),
+                new("@id", entity.Id)
             };
-
-            var id = Convert.ToInt32(
-                await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters));
-            entity.Id = id;
-
-            return entity;
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var query = $"delete from {CompanyTable.TableName} where {CompanyTable.Id} = @id";
-            SqlParameter[] parameters = {new("@id", id)};
-
-            var affectedRowsCount =
-                await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
+            
+            var affectedRowsCount = await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
             return affectedRowsCount == 1;
         }
 
+        public async Task<bool> DeleteAsync(int id) =>
+            await base.DeleteAsync(CompanyTable.TableName, CompanyTable.Id, id);
+
         public async Task<Company> FindAsync(int id)
         {
-            var query =
-                $"select {CompanyTable.Id}, {CompanyTable.Name}, {CompanyTable.BusinessEntityId}, {CompanyTable.Size} from {CompanyTable.TableName} where {CompanyTable.Id} = @id";
-            SqlParameter[] parameters = {new("@id", id)};
-            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query, parameters: parameters);
+            var reader = await FromFind(CompanyTable.TableName, CompanyTable.Id, id);
 
             if (!reader.HasRows)
                 return Company.Empty;
@@ -86,20 +74,18 @@ namespace EmployeesAndCompanies.Persistence
             };
         }
 
-        public async Task<IEnumerable<Company>> GetAll()
+        public async Task<IEnumerable<Company>> GetAllAsync()
         {
-            var query =
-                $"select {CompanyTable.Id}, {CompanyTable.Name}, {CompanyTable.BusinessEntityId}, {CompanyTable.Size} from {CompanyTable.TableName}";
+            var query = GetSelectAllString(CompanyTable.TableName);
             var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
 
             if (!reader.HasRows)
                 return Enumerable.Empty<Company>();
 
-            var companies = new List<Company>();
-            // todo: how it read more efficient?
+            var entities = new List<Company>();
             while (await reader.ReadAsync())
             {
-                companies.Add(new Company
+                entities.Add(new Company
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
@@ -108,7 +94,7 @@ namespace EmployeesAndCompanies.Persistence
                 });
             }
 
-            return companies;
+            return entities;
         }
     }
 }
