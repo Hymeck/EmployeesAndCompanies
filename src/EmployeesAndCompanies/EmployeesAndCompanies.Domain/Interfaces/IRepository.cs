@@ -1,12 +1,13 @@
-﻿using EmployeesAndCompanies.Domain.Entities;
+﻿using System.Threading.Tasks;
+using EmployeesAndCompanies.Domain.Entities;
 
 namespace EmployeesAndCompanies.Domain.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : BaseEntity
     {
-        TEntity Add(TEntity entity);
-        TEntity Update(TEntity entity);
-        TEntity Delete(TEntity entity);
-        TEntity Find(int id);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
+        Task<bool> DeleteAsync(int id);
+        Task<TEntity> FindAsync(int id);
     }
 }
