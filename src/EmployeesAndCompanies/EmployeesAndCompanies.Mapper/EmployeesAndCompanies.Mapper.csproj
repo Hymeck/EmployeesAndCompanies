@@ -5,9 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EmployeesAndCompanies.Domain\EmployeesAndCompanies.Domain.csproj" />
       <ProjectReference Include="..\EmployeesAndCompanies.DTO\EmployeesAndCompanies.DTO.csproj" />
-      <ProjectReference Include="..\EmployeesAndCompanies.Mapper\EmployeesAndCompanies.Mapper.csproj" />
-      <ProjectReference Include="..\EmployeesAndCompanies.Persistence\EmployeesAndCompanies.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

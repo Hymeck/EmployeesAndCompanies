@@ -12,7 +12,7 @@ namespace EmployeesAndCompanies.Persistence
 
         protected static string GetSelectAllString(string tableName) =>
             $"select * from {tableName}";
-        
+
         protected static string GetDeleteString(string tableName, string id) =>
             $"delete from {tableName} where {id} = @id";
 

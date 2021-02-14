@@ -7,5 +7,6 @@ namespace EmployeesAndCompanies.Service.Interfaces
     public interface IEmployeeService
     {
         Task<IEnumerable<EmployeeDto>> GetAllAsync();
+        Task<EmployeeDto> GetAsync(int id);
     }
 }

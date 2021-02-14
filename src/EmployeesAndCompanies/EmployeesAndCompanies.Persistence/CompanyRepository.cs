@@ -82,10 +82,10 @@ namespace EmployeesAndCompanies.Persistence
             if (!reader.HasRows)
                 return Enumerable.Empty<Company>();
 
-            var entities = new List<Company>();
+            var entities = new Queue<Company>();
             while (await reader.ReadAsync())
             {
-                entities.Add(new Company
+                entities.Enqueue(new Company
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
@@ -95,6 +95,20 @@ namespace EmployeesAndCompanies.Persistence
             }
 
             return entities;
+        }
+
+        public async Task<IEnumerable<string>> GetNamesAsync()
+        {
+            var query = $"select {CompanyTable.Name} from {CompanyTable.TableName}";
+            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
+            if (!reader.HasRows)
+                return Enumerable.Empty<string>();
+
+            var names = new Queue<string>();
+            while (await reader.ReadAsync()) 
+                names.Enqueue(reader.GetString(0));
+            
+            return names;
         }
     }
 }

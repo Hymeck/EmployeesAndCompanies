@@ -1,11 +1,12 @@
 ﻿@model EmployeeViewModel
 @{
-    ViewBag.Title = "Добавление/редактирование работника";
+    ViewBag.Title = "Добавление/редактирование сотрудника";
 }
 
 <h2>@ViewBag.Title</h2>
 <div class="row">
     <div class="col-md-12">
+        <input type="hidden" asp-for="Id"/>
         <div>
             <label asp-for="Name1"></label><br/>
             <input asp-for="Name1" class="form-control"/>
@@ -31,7 +32,29 @@
         </div>
 
         <div>
-            <button class="btn btn-primary" type="submit" value="Save">Применить</button>
+            <table class="table">
+                <tr>
+                    <th>Название компании</th>
+                    <th></th>
+                </tr>
+                @foreach (var c in Model.Companies)
+                {
+                    <tr>
+                        <td>@c</td>
+                        <td>
+                            <form method="post" asp-action="RemoveCompany" asp-route-id="@Model.Id" asp-route-companyName="@c">
+                                <button class="btn btn-danger">Убрать</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+            <select asp-items="@((SelectList) ViewData["companies"])" class="form-control"></select><br/>
+        </div>
+
+        <div>
+            <button class="btn btn-primary" type="submit">Применить</button>
         </div>
     </div>
 </div>

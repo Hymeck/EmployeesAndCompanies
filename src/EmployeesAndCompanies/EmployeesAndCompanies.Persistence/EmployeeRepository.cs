@@ -88,16 +88,72 @@ namespace EmployeesAndCompanies.Persistence
             if (!reader.HasRows)
                 return Enumerable.Empty<Employee>();
 
-            var entities = new List<Employee>();
+            var entities = new Queue<Employee>();
             while (await reader.ReadAsync())
             {
-                entities.Add(new Employee
+                entities.Enqueue(new Employee
                 {
                     Id = reader.GetInt32(0),
                     Name1 = reader.GetString(1),
                     Name2 = reader.GetString(2),
                     Name3 = reader.GetString(3),
                     EmploymentDate = reader.GetDateTime(4)
+                });
+            }
+
+            return entities;
+        }
+
+        public async Task<IEnumerable<Post>> GetPostsAsync(int employeeId)
+        {
+            var query = "select post.id, post.name " +
+                        "from m2m_empl_post " +
+                        "inner join employee on employee.id = m2m_empl_post.id_employee " +
+                        "inner join post on m2m_empl_post.id_post = post.id " +
+                        "where employee.id = @id";
+            
+            SqlParameter[] parameters = { new("@id", employeeId) };
+
+            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query, parameters: parameters);
+            if (!reader.HasRows)
+                return Enumerable.Empty<Post>();
+
+            var entities = new Queue<Post>();
+            while (await reader.ReadAsync())
+            {
+                entities.Enqueue(new Post
+                {
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1)
+                });
+            }
+
+            return entities;
+        }
+
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(int employeeId)
+        {
+            var query = "select company.id, company.name, company.id_business_entity, company.size " +
+                        "from m2m_empl_comp " +
+                        "inner join employee on employee.id = m2m_empl_comp.id_employee " +
+                        "inner join company on m2m_empl_comp.id_company = company.id " +
+                        "where employee.id = @id";
+            
+            SqlParameter[] parameters = { new("@id", employeeId) };
+            
+            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query, parameters: parameters);
+            if (!reader.HasRows)
+                return Enumerable.Empty<Company>();
+
+            var entities = new Queue<Company>();
+            while (await reader.ReadAsync())
+            {
+                entities.Enqueue(new Company
+                {
+                    Id = reader.GetInt32(0),
+                    Name = reader.GetString(1),
+                    BusinessEntityId = reader.GetInt32(2),
+                    Size = reader.GetInt32(3)
                 });
             }
 

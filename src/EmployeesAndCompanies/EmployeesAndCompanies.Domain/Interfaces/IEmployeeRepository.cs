@@ -7,5 +7,7 @@ namespace EmployeesAndCompanies.Domain.Interfaces
     public interface IEmployeeRepository : IRepository<Employee>
     {
         Task<IEnumerable<Employee>> GetAllAsync();
+        Task<IEnumerable<Post>> GetPostsAsync(int employeeId);
+        Task<IEnumerable<Company>> GetCompaniesAsync(int employeeId);
     }
 }
