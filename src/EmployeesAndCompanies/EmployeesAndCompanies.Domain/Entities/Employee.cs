@@ -13,7 +13,7 @@ namespace EmployeesAndCompanies.Domain.Entities
         public DateTime EmploymentDate { get; set; }
 
         public IEnumerable<Post> Posts { get; set; } = Enumerable.Empty<Post>();
-        public IEnumerable<Post> Companies { get; set; } = Enumerable.Empty<Post>();
+        public IEnumerable<Company> Companies { get; set; } = Enumerable.Empty<Company>();
 
         public override string ToString() =>
             $"{Id}. {Name1.Trim()} {Name2.Trim()} {Name3.Trim()} {EmploymentDate.ToShortDateString()}";

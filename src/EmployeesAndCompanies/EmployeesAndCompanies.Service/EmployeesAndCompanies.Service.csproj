@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EmployeesAndCompanies.DTO\EmployeesAndCompanies.DTO.csproj" />
       <ProjectReference Include="..\EmployeesAndCompanies.Persistence\EmployeesAndCompanies.Persistence.csproj" />
     </ItemGroup>
 
