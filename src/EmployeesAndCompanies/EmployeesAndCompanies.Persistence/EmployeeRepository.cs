@@ -63,7 +63,7 @@ namespace EmployeesAndCompanies.Persistence
 
         public async Task<Employee> FindAsync(int id)
         {
-            var reader = await FromFind(EmployeeTable.TableName, EmployeeTable.Id, id);
+            var reader = await base.FromFind(EmployeeTable.TableName, EmployeeTable.Id, id);
 
             if (!reader.HasRows)
                 return Employee.Empty;
