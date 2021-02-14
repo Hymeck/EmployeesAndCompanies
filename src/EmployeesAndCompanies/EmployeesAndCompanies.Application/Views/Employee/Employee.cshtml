@@ -1,61 +1,69 @@
 ﻿@model EmployeeViewModel
 @{
-    ViewBag.Title = "Добавление/редактирование сотрудника";
+    ViewBag.Title = ViewData["title"];
 }
 
 <h2>@ViewBag.Title</h2>
 <div class="row">
     <div class="col-md-12">
-        <input type="hidden" asp-for="Id"/>
-        <div>
-            <label asp-for="Name1"></label><br/>
-            <input asp-for="Name1" class="form-control"/>
-            <span asp-validation-for="Name1"></span><br/>
-        </div>
+        <form method="post">
+            <input type="hidden" asp-for="Id"/>
+            <div>
+                <label asp-for="Name1"></label><br/>
+                <input asp-for="Name1" class="form-control"/>
+                <span asp-validation-for="Name1"></span><br/>
+            </div>
 
-        <div>
-            <label asp-for="Name2"></label><br/>
-            <input asp-for="Name2" class="form-control"/>
-            <span asp-validation-for="Name2"></span><br/>
-        </div>
+            <div>
+                <label asp-for="Name2"></label><br/>
+                <input asp-for="Name2" class="form-control"/>
+                <span asp-validation-for="Name2"></span><br/>
+            </div>
 
-        <div>
-            <label asp-for="Name3"></label><br/>
-            <input asp-for="Name3" class="form-control"/>
-            <span asp-validation-for="Name3"></span><br/>
-        </div>
+            <div>
+                <label asp-for="Name3"></label><br/>
+                <input asp-for="Name3" class="form-control"/>
+                <span asp-validation-for="Name3"></span><br/>
+            </div>
 
-        <div>
-            <label asp-for="EmploymentDate"></label><br/>
-            <input asp-for="EmploymentDate" class="form-control"/>
-            <span asp-validation-for="EmploymentDate"></span><br/>
-        </div>
+            <div>
+                <label asp-for="EmploymentDate"></label><br/>
+                <input asp-for="EmploymentDate" class="form-control"/>
+                <span asp-validation-for="EmploymentDate"></span><br/>
+            </div>
 
-        <div>
-            <table class="table">
-                <tr>
-                    <th>Название компании</th>
-                    <th></th>
-                </tr>
-                @foreach (var c in Model.Companies)
-                {
+            <div>
+                <table class="table">
                     <tr>
-                        <td>@c</td>
-                        <td>
-                            <form method="post" asp-action="RemoveCompany" asp-route-id="@Model.Id" asp-route-companyName="@c">
-                                <button class="btn btn-danger">Убрать</button>
-                            </form>
-                        </td>
+                        <th>Название компании</th>
+                        <th></th>
                     </tr>
-                }
-            </table>
+                    
+                    @foreach (var c in Model.Companies)
+                    {
+                        <tr>
+                            <input type="hidden" asp-for="@c"/>
+                            <td>@Html.DisplayFor(model => c)</td>
+                            <td>
+                                @* <form method="post" asp-action="RemoveCompany" asp-route-id="@Model.Id" asp-route-companyName="@c"> *@
+                                <button class="btn btn-danger">Убрать</button>
+                                @* </form> *@
+                            </td>
+                        </tr>
+                    }
+                    
+                </table>
 
-            <select asp-items="@((SelectList) ViewData["companies"])" class="form-control"></select><br/>
-        </div>
+                <div>
+                    <h4>Добавить компанию</h4>
+                </div>
 
-        <div>
-            @* todo: why it does not work? *@
-            <button class="btn btn-primary" type="submit">Применить</button>
-        </div>
+                <select asp-items="@((SelectList) ViewData["companies"])" class="form-control"></select><br/>
+            </div>
+
+            <div>
+                <button class="btn btn-primary" type="submit">Применить</button>
+            </div>
+        </form>
     </div>
 </div>

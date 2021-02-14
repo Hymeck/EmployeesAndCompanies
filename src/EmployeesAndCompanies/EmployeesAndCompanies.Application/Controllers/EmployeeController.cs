@@ -18,27 +18,25 @@ namespace EmployeesAndCompanies.Application.Controllers
         public async Task<IActionResult> Index() =>
             View(await _employeeService.GetAllAsync());
 
-
         [HttpGet]
         public async Task<IActionResult> Add()
         {
             ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
-            
+            ViewData["title"] = "Добавление нового сотрудника";
+
             return View("Employee", EmployeeViewModel.Empty);
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(EmployeeViewModel vm)
         {
-            ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
-
             if (ModelState.IsValid)
             {
                 var result = await _employeeService.AddAsync(EmployeeViewModel.To(vm));
                 if (result)
                     return RedirectToAction("Index");
             }
-            
+
             return await Add();
         }
 
@@ -46,7 +44,8 @@ namespace EmployeesAndCompanies.Application.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
-            
+            ViewData["title"] = "Редактирование сотрудника";
+
             var entity = await _employeeService.GetAsync(id);
             var vm = EmployeeViewModel.From(entity);
             return View("Employee", vm);
@@ -55,9 +54,13 @@ namespace EmployeesAndCompanies.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EmployeeViewModel vm)
         {
-            ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
-            // todo: editing logic
-            // if all is ok -> RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var result = await _employeeService.EditAsync(EmployeeViewModel.To(vm));
+                if (result)
+                    return RedirectToAction("Index");
+            }
+
             return View("Employee", vm);
         }
 

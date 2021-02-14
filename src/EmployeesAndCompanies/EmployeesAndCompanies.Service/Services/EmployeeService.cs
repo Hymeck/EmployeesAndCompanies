@@ -34,5 +34,10 @@ namespace EmployeesAndCompanies.Service.Services
             var result = await _employeeRepository.AddAsync(EmployeeMapper.To(dto));
             return result.Id != 0;
         }
+
+        public async Task<bool> EditAsync(EmployeeDto dto)
+        {
+            return await _employeeRepository.UpdateAsync(EmployeeMapper.To(dto));
+        }
     }
 }
