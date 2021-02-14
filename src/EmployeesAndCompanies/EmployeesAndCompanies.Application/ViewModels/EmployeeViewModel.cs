@@ -44,5 +44,17 @@ namespace EmployeesAndCompanies.Application.ViewModels
                 Companies = e.Companies,
                 Posts = e.Posts
             };
+
+        public static EmployeeDto To(EmployeeViewModel vm) =>
+            new()
+            {
+                Id = vm.Id,
+                Name1 = vm.Name1,
+                Name2 = vm.Name2,
+                Name3 = vm.Name3,
+                EmploymentDate = vm.EmploymentDate,
+                Companies = vm.Companies,
+                Posts = vm.Posts
+            };
     }
 }

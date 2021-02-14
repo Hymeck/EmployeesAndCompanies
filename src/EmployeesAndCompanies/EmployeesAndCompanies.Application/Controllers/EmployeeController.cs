@@ -30,8 +30,15 @@ namespace EmployeesAndCompanies.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(EmployeeViewModel vm)
         {
-            // todo: adding logic
-            // return View("Employee", EmployeeViewModel.Empty);
+            ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
+
+            if (ModelState.IsValid)
+            {
+                var result = await _employeeService.AddAsync(EmployeeViewModel.To(vm));
+                if (result)
+                    return RedirectToAction("Index");
+            }
+            
             return await Add();
         }
 

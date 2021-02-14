@@ -24,5 +24,13 @@ namespace EmployeesAndCompanies.Mapper
             dto.Companies = companies.Select(c => c.Name);
             return dto;
         }
+
+        public static Employee To(EmployeeDto dto) => new()
+        {
+            Name1 = dto.Name1,
+            Name2 = dto.Name2,
+            Name3 = dto.Name3,
+            EmploymentDate = dto.EmploymentDate
+        };
     }
 }

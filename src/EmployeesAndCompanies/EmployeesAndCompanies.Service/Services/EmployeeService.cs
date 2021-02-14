@@ -28,5 +28,11 @@ namespace EmployeesAndCompanies.Service.Services
             var companies = await _employeeRepository.GetCompaniesAsync(id);
             return EmployeeMapper.From(entity, posts, companies);
         }
+
+        public async Task<bool> AddAsync(EmployeeDto dto)
+        {
+            var result = await _employeeRepository.AddAsync(EmployeeMapper.To(dto));
+            return result.Id != 0;
+        }
     }
 }
