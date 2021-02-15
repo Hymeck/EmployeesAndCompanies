@@ -22,19 +22,23 @@ namespace EmployeesAndCompanies.Application.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
+            var companies = await _companyService.GetAllAsync();
+            var companiesList = companies.ToSelectListItemList();
+            
             ViewData["title"] = "Добавление нового сотрудника";
 
-            return View("Employee", EmployeeViewModel.Empty);
+            var vm = EmployeeViewModel.EmptyWithCompanies(companiesList);
+            return View("Employee", vm);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(EmployeeViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                // request to BD for companies and posts
-                var result = await _employeeService.AddAsync(EmployeeViewModel.ToDto(vm));
+                var dto = EmployeeViewModel.ToDto(vm);
+                var result = await _employeeService.AddAsync(dto);
                 if (result)
                     return RedirectToAction("Index");
             }
@@ -45,14 +49,16 @@ namespace EmployeesAndCompanies.Application.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var names = await _companyService.GetNamesAsync();
             var entity = await _employeeService.GetAsync(id);
-            ViewData["companies"] = names
-                .Except(entity.Companies.Select(c => c.Name))
-                .ToSelectList();
+            
+            var companies = await _companyService.GetAllAsync();
+            var companiesList = companies.ToSelectListItemList();
+            
             ViewData["title"] = "Редактирование сотрудника";
 
-            var vm = EmployeeViewModel.FromDto(entity);
+            // todo: set checkbox if specified employee is in a company (may be several)
+            
+            var vm = EmployeeViewModel.FromDto(entity, companiesList);
             return View("Employee", vm);
         }
 
@@ -71,13 +77,14 @@ namespace EmployeesAndCompanies.Application.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _employeeService.DeleteAsync(id);
+            await _employeeService.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 
-        public IActionResult RemoveCompany(int id, string companyName)
+        public async Task<IActionResult> RemoveCompany(int id, int companyId)
         {
-            throw new System.NotImplementedException();
+            await _employeeService.RemoveCompanyAsync(id, companyId);
+            return await Edit(id);
         }
     }
 }

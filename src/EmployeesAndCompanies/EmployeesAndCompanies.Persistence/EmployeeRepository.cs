@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using EmployeesAndCompanies.Domain.Entities;
 using EmployeesAndCompanies.Domain.Interfaces;
@@ -19,8 +20,8 @@ namespace EmployeesAndCompanies.Persistence
             var query =
                 $"insert into {EmployeeTable.TableName} ({EmployeeTable.Name1}, {EmployeeTable.Name2}, {EmployeeTable.Name3}, {EmployeeTable.EmploymentDate}) " +
                 "values (@name1, @name2, @name3, @date) " +
-                "SELECT SCOPE_IDENTITY()";
-
+                "select SCOPE_IDENTITY()";
+            
             SqlParameter[] parameters =
             {
                 new("@name1", entity.Name1),
@@ -28,10 +29,51 @@ namespace EmployeesAndCompanies.Persistence
                 new("@name3", entity.Name3),
                 new("@date", entity.EmploymentDate),
             };
+            
             var id = Convert.ToInt32(
                 await SqlHelper.ExecuteScalarAsync(ConnectionString, query, parameters: parameters));
             entity.Id = id;
+            
+            var queueParams = new Queue<SqlParameter>();
 
+            var i = 0;
+            var sb = new StringBuilder();
+            foreach (var c in entity.Companies)
+            {
+                sb.Append($"(@eId{i}, @cId{i}), ");
+                queueParams.Enqueue(new SqlParameter($"@eId{i}", id));
+                queueParams.Enqueue(new SqlParameter($"@cId{i}", c.Id));
+                i++;
+            }
+
+            if (i != 0)
+            {
+                sb.Remove(sb.Length - 2, 2);
+                query = $"insert into m2m_empl_comp values {sb}";
+                parameters = queueParams.ToArray();
+                await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
+                
+                i = 0;
+                sb = new StringBuilder();
+                queueParams = new Queue<SqlParameter>();
+            }
+            
+            foreach (var p in entity.Posts)
+            {
+                sb.Append($"(@eId{i}, @pId{i}), ");
+                queueParams.Enqueue(new SqlParameter($"@eId{i}", id));
+                queueParams.Enqueue(new SqlParameter($"@pId{i}", p.Id));
+                i++;
+            }
+
+            if (i != 0)
+            {
+                sb.Remove(sb.Length - 2, 2);
+                query = $"insert into m2m_empl_post values {sb}";
+                parameters = queueParams.ToArray();
+                await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
+            }
+            
             return entity;
         }
 
@@ -158,6 +200,20 @@ namespace EmployeesAndCompanies.Persistence
             }
 
             return entities;
+        }
+
+        public async Task<bool> RemoveCompany(int employeeId, int companyId)
+        {
+            var query = "delete from m2m_empl_comp where id_employee = @employeeId and id_company = @companyId";
+            SqlParameter[] parameters =
+            {
+                new("@employeeId", employeeId),
+                new("@@companyId", companyId),
+            };
+            var affectedRowsCount =
+                await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
+            
+            return affectedRowsCount == 1;
         }
     }
 }

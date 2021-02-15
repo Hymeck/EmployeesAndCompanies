@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using EmployeesAndCompanies.Domain.Interfaces;
+using EmployeesAndCompanies.DTO;
+using EmployeesAndCompanies.Mapper;
 using EmployeesAndCompanies.Service.Interfaces;
 
 namespace EmployeesAndCompanies.Service.Services
@@ -13,9 +16,20 @@ namespace EmployeesAndCompanies.Service.Services
         public CompanyService(ICompanyRepository companyRepository) =>
             _companyRepository = companyRepository;
 
-        public async Task<IReadOnlyCollection<string>> GetNamesAsync() =>
-            (await _companyRepository
-                .GetNamesAsync())
-            .ToImmutableArray();
+        public async Task<IEnumerable<CompanyDto>> GetAllAsync()
+        {
+            var entities = await _companyRepository
+                .GetAllAsync();
+            
+            return entities.Select(CompanyMapper.ToDto);
+        }
+
+        public async Task<IReadOnlyCollection<string>> GetNamesAsync()
+        {
+            var names = await _companyRepository
+                .GetNamesAsync();
+            
+            return names.ToImmutableArray();
+        }
     }
 }

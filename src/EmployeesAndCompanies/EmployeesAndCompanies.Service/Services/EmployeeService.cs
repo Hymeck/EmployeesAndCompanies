@@ -38,12 +38,26 @@ namespace EmployeesAndCompanies.Service.Services
 
         public async Task<bool> EditAsync(EmployeeDto dto)
         {
+            if (dto.Id == 0)
+                return false;
+            
             return await _employeeRepository.UpdateAsync(EmployeeMapper.FromDto(dto));
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
+            if (id == 0)
+                return false;
+            
             return await _employeeRepository.DeleteAsync(id);
+        }
+
+        public async Task<bool> RemoveCompanyAsync(int id, int companyId)
+        {
+            if (id == 0 || companyId == 0) 
+                return false;
+            
+            return await _employeeRepository.RemoveCompany(id, companyId);
         }
     }
 }

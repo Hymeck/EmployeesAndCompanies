@@ -9,5 +9,6 @@ namespace EmployeesAndCompanies.Domain.Interfaces
         Task<IEnumerable<Employee>> GetAllAsync();
         Task<IEnumerable<Post>> GetPostsAsync(int employeeId);
         Task<IEnumerable<Company>> GetCompaniesAsync(int employeeId);
+        Task<bool> RemoveCompany(int employeeId, int companyId);
     }
 }

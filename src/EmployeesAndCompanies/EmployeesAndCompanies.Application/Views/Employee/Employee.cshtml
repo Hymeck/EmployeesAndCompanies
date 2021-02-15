@@ -7,6 +7,7 @@
 <div class="row">
     <div class="col-md-12">
         <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id"/>
             <div>
                 <label asp-for="Name1"></label><br/>
@@ -23,7 +24,6 @@
             <div>
                 <label asp-for="Name3"></label><br/>
                 <input asp-for="Name3" class="form-control" autocomplete="off"/>
-                <span asp-validation-for="Name3"></span><br/>
             </div>
 
             <div>
@@ -32,47 +32,19 @@
                 <span asp-validation-for="EmploymentDate"></span><br/>
             </div>
 
-            <div>
-                <table class="table">
-                    <tr>
-                        <th>Название компании</th>
-                        <th></th>
-                    </tr>
-
-                    @foreach (var c in Model.Companies)
+            <div class="form-group">
+                <ul>
+                    @for (var i = 0; i < Model.Companies.Count; i++)
                     {
-                        <tr>
-                            <td>@c</td>
-                            <td>
-                                <button class="btn btn-danger">Убрать</button>
-                            </td>
-                        </tr>
+                        <li>
+                            <input type="hidden" asp-for="@Model.Companies[i].Value"/>
+                            <input type="hidden" asp-for="@Model.Companies[i].Text"/>
+                            <input type="hidden" asp-for="@Model.Companies[i].Selected"/>
+                            <input asp-for="Companies[i].Selected"/>
+                            @Model.Companies[i].Text
+                        </li>
                     }
-
-                </table>
-
-                <table class="table">
-                    <tr>
-                        <th>Название должности</th>
-                        <th></th>
-                    </tr>
-
-                    @foreach (var p in Model.Posts)
-                    {
-                        <tr>
-                            <td>@p</td>
-                            <td>
-                                <button class="btn btn-danger">Убрать</button>
-                            </td>
-                        </tr>
-                    }
-                </table>
-
-                <div>
-                    <h4>Добавить компанию</h4>
-                </div>
-
-                <select asp-items="@((SelectList) ViewData["companies"])" class="form-control"></select><br/>
+                </ul>
             </div>
 
             <div>

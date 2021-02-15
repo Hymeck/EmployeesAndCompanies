@@ -11,5 +11,6 @@ namespace EmployeesAndCompanies.Service.Interfaces
         Task<bool> AddAsync(EmployeeDto dto);
         Task<bool> EditAsync(EmployeeDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<bool> RemoveCompanyAsync(int id, int companyId);
     }
 }

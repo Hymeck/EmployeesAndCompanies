@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using EmployeesAndCompanies.Application.Other;
 using EmployeesAndCompanies.DTO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EmployeesAndCompanies.Application.ViewModels
 {
@@ -23,15 +25,17 @@ namespace EmployeesAndCompanies.Application.ViewModels
         [DataType(DataType.Date)] 
         public DateTime EmploymentDate { get; set; } = DateTime.Now;
 
-        [Display(Name = "Компании")] 
-        public IEnumerable<string> Companies { get; set; } = Enumerable.Empty<string>();
+        // [Display(Name = "Компании")] 
+        // public IEnumerable<CompanyDto> Companies { get; set; } = Enumerable.Empty<CompanyDto>();
+        //
+        // [Display(Name = "Должности")] 
+        // public IEnumerable<PostDto> Posts { get; set; } = Enumerable.Empty<PostDto>();
+        
+        public IList<SelectListItem> Companies { get; set; } = ArraySegment<SelectListItem>.Empty;
 
-        [Display(Name = "Должности")] 
-        public IEnumerable<string> Posts { get; set; } = Enumerable.Empty<string>();
+        // public string GetCompaniesString() => string.Join(", ", Companies);
 
-        public string GetCompaniesString() => string.Join(", ", Companies);
-
-        public static EmployeeViewModel FromDto(EmployeeDto e) =>
+        public static EmployeeViewModel FromDto(EmployeeDto e, IList<SelectListItem> items) =>
             new()
             {
                 Id = e.Id,
@@ -39,8 +43,9 @@ namespace EmployeesAndCompanies.Application.ViewModels
                 Name2 = e.Name2,
                 Name3 = e.Name3,
                 EmploymentDate = e.EmploymentDate,
-                Companies = e.Companies.Select(c => c.Name),
-                Posts = e.Posts.Select(p => p.Name)
+                Companies = items
+                // Companies = e.Companies.ToSelectListItemList(),
+                // Posts = e.Posts
             };
 
         public static EmployeeDto ToDto(
@@ -59,6 +64,11 @@ namespace EmployeesAndCompanies.Application.ViewModels
             };
 
         public static EmployeeDto ToDto(EmployeeViewModel vm) =>
-            ToDto(vm, Enumerable.Empty<CompanyDto>(), Enumerable.Empty<PostDto>());
+            // ToDto(vm, vm.Companies, vm.Posts);
+            ToDto(vm, vm.Companies.Select(i => 
+                new CompanyDto(Convert.ToInt32(i.Value), i.Text, 0, 0)), Enumerable.Empty<PostDto>());
+
+        public static EmployeeViewModel EmptyWithCompanies(IList<SelectListItem> companies) => 
+            new() {Companies = companies};
     }
 }

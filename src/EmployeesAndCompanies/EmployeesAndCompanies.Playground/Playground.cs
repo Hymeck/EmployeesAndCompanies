@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -19,7 +18,31 @@ namespace EmployeesAndCompanies.Playground
             // await PlayWithDb();
             // await Names();
             // await EmployeeCompanies();
-            await EmployeePosts();
+            // await EmployeePosts();
+            await AddEmployeeWithCompaniesAndPosts();
+        }
+
+        private static async Task AddEmployeeWithCompaniesAndPosts()
+        {
+            var company1 = new Company { Id = 1};
+            var company2 = new Company { Id = 2};
+
+            var post1 = new Post {Id = 1};
+            var post2 = new Post {Id = 2};
+
+            var employee = new Employee
+            {
+                Name1 = "Name111",
+                Name2 = "Name222",
+                Name3 = "Name333",
+                EmploymentDate = DateTime.Now,
+                Companies = new[] {company1, company2},
+                Posts = new[] {post1, post2}
+            };
+
+            var repo = new EmployeeRepository(ConnectionString);
+
+            await repo.AddAsync(employee);
         }
 
         private static async Task EmployeePosts()
