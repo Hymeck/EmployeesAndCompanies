@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using EmployeesAndCompanies.Application.Other;
 using EmployeesAndCompanies.Application.ViewModels;
 using EmployeesAndCompanies.Service.Interfaces;
@@ -32,7 +33,8 @@ namespace EmployeesAndCompanies.Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _employeeService.AddAsync(EmployeeViewModel.To(vm));
+                // request to BD for companies and posts
+                var result = await _employeeService.AddAsync(EmployeeViewModel.ToDto(vm));
                 if (result)
                     return RedirectToAction("Index");
             }
@@ -43,11 +45,14 @@ namespace EmployeesAndCompanies.Application.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            ViewData["companies"] = (await _companyService.GetNamesAsync()).ToSelectList();
+            var names = await _companyService.GetNamesAsync();
+            var entity = await _employeeService.GetAsync(id);
+            ViewData["companies"] = names
+                .Except(entity.Companies.Select(c => c.Name))
+                .ToSelectList();
             ViewData["title"] = "Редактирование сотрудника";
 
-            var entity = await _employeeService.GetAsync(id);
-            var vm = EmployeeViewModel.From(entity);
+            var vm = EmployeeViewModel.FromDto(entity);
             return View("Employee", vm);
         }
 
@@ -56,7 +61,7 @@ namespace EmployeesAndCompanies.Application.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _employeeService.EditAsync(EmployeeViewModel.To(vm));
+                var result = await _employeeService.EditAsync(EmployeeViewModel.ToDto(vm));
                 if (result)
                     return RedirectToAction("Index");
             }
@@ -66,7 +71,7 @@ namespace EmployeesAndCompanies.Application.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            // todo: deleting logic
+            var result = await _employeeService.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 

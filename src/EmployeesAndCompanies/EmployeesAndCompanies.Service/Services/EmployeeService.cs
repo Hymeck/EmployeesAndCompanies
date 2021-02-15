@@ -18,7 +18,7 @@ namespace EmployeesAndCompanies.Service.Services
         public async Task<IEnumerable<EmployeeDto>> GetAllAsync()
         {
             var entities = await _employeeRepository.GetAllAsync();
-            return entities.Select(EmployeeMapper.From);
+            return entities.Select(EmployeeMapper.ToDto);
         }
 
         public async Task<EmployeeDto> GetAsync(int id)
@@ -26,18 +26,24 @@ namespace EmployeesAndCompanies.Service.Services
             var entity = await _employeeRepository.FindAsync(id);
             var posts = await _employeeRepository.GetPostsAsync(id);
             var companies = await _employeeRepository.GetCompaniesAsync(id);
-            return EmployeeMapper.From(entity, posts, companies);
+            return EmployeeMapper.ToDto(entity, posts, companies);
         }
 
         public async Task<bool> AddAsync(EmployeeDto dto)
         {
-            var result = await _employeeRepository.AddAsync(EmployeeMapper.To(dto));
+            var entity = EmployeeMapper.FromDto(dto);
+            var result = await _employeeRepository.AddAsync(entity);
             return result.Id != 0;
         }
 
         public async Task<bool> EditAsync(EmployeeDto dto)
         {
-            return await _employeeRepository.UpdateAsync(EmployeeMapper.To(dto));
+            return await _employeeRepository.UpdateAsync(EmployeeMapper.FromDto(dto));
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _employeeRepository.DeleteAsync(id);
         }
     }
 }

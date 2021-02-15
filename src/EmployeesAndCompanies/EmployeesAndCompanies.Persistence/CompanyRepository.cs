@@ -59,7 +59,7 @@ namespace EmployeesAndCompanies.Persistence
 
         public async Task<Company> FindAsync(int id)
         {
-            var reader = await FromFind(CompanyTable.TableName, CompanyTable.Id, id);
+            await using var reader = await FromFind(CompanyTable.TableName, CompanyTable.Id, id);
 
             if (!reader.HasRows)
                 return Company.Empty;
@@ -77,7 +77,7 @@ namespace EmployeesAndCompanies.Persistence
         public async Task<IEnumerable<Company>> GetAllAsync()
         {
             var query = GetSelectAllString(CompanyTable.TableName);
-            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
+            await using var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
 
             if (!reader.HasRows)
                 return Enumerable.Empty<Company>();
@@ -100,7 +100,7 @@ namespace EmployeesAndCompanies.Persistence
         public async Task<IEnumerable<string>> GetNamesAsync()
         {
             var query = $"select {CompanyTable.Name} from {CompanyTable.TableName}";
-            var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
+            await using var reader = await SqlHelper.ExecuteReaderAsync(ConnectionString, query);
             if (!reader.HasRows)
                 return Enumerable.Empty<string>();
 

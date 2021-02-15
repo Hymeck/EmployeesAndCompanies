@@ -16,6 +16,6 @@ namespace EmployeesAndCompanies.Domain.Entities
         public IEnumerable<Company> Companies { get; set; } = Enumerable.Empty<Company>();
 
         public override string ToString() =>
-            $"{Id}. {Name1.Trim()} {Name2.Trim()} {Name3.Trim()} {EmploymentDate.ToShortDateString()}";
+            $"{Id}. {Name1} {Name2} {Name3}, {EmploymentDate.ToShortDateString()}";
     }
 }

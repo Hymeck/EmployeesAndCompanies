@@ -1,6 +1,6 @@
 ﻿namespace EmployeesAndCompanies.DTO
 {
-    public record BusinessEntityDto(string Name, string Abbreviation)
+    public record BusinessEntityDto(int Id, string Name, string Abbreviation)
     {
         public override string ToString() => Name;
     }

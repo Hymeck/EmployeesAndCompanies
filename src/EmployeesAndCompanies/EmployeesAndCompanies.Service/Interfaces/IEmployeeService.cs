@@ -10,5 +10,6 @@ namespace EmployeesAndCompanies.Service.Interfaces
         Task<EmployeeDto> GetAsync(int id);
         Task<bool> AddAsync(EmployeeDto dto);
         Task<bool> EditAsync(EmployeeDto dto);
+        Task<bool> DeleteAsync(int id);
     }
 }
