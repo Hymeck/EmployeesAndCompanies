@@ -1,0 +1,46 @@
+﻿@model CompanyViewModel
+
+@{
+    ViewBag.Title = ViewData["title"];
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-12">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="BusinessEntityId"/>
+            <div>
+                <label asp-for="Name"></label><br/>
+                <input asp-for="Name" class="form-control" autocomplete="off"/>
+                <span asp-validation-for="Name"></span><br/>
+            </div>
+
+            <div>
+                <label asp-for="Size"></label><br/>
+                <input asp-for="Size" class="form-control" autocomplete="off"/>
+                <span asp-validation-for="Size"></span><br/>
+            </div>
+
+            <div>
+                <label asp-for="BusinessEntityName"></label><br/>
+                <input asp-for="BusinessEntityName" class="form-control" autocomplete="off"/>
+                <span asp-validation-for="BusinessEntityName"></span><br/>
+            </div>
+            
+            @* <select id="ddlBusinessEntities" name="value" asp-items="@Model.BusinessEntities" class="form-control"></select> *@
+            @* <div class="form-group"> *@
+            @*     @Html.DropDownListFor(m => m.Name, Model.BusinessEntities) *@
+            @* </div> *@
+            
+            @* <div> *@
+            @*     <select asp-items="Model.BusinessEntities" asp-for="Name"></select> *@
+            @* </div> *@
+            
+            <div>
+                <button class="btn btn-primary" type="submit">Применить</button>
+            </div>
+        </form>
+    </div>
+</div>

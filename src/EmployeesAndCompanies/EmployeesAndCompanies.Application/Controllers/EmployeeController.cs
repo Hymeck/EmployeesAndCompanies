@@ -33,7 +33,7 @@ namespace EmployeesAndCompanies.Application.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(EmployeeViewModel vm)
+        public async Task<IActionResult> Add([FromForm] EmployeeViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -52,7 +52,8 @@ namespace EmployeesAndCompanies.Application.Controllers
             var entity = await _employeeService.GetAsync(id);
             
             var companies = await _companyService.GetAllAsync();
-            var companiesList = companies.ToSelectListItemList();
+            // var companiesList = companies.ToSelectListItemList();
+            var companiesList = companies.ToSelectListItemList(entity.Companies);
             
             ViewData["title"] = "Редактирование сотрудника";
 

@@ -23,8 +23,10 @@ namespace EmployeesAndCompanies.Application
             var connectionString = DatabaseConnectionString;
             services.AddSingleton(_ => Configuration);
             services.AddTransient<IEmployeeRepository, EmployeeRepository>(_ => new EmployeeRepository(connectionString));
+            services.AddTransient<IBusinessEntityRepository, BusinessEntityRepository>(_ => new BusinessEntityRepository(connectionString));
             services.AddTransient<ICompanyRepository, CompanyRepository>(_ => new CompanyRepository(connectionString));
 
+            services.AddScoped<IBusinessEntityService, BusinessEntityService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
 

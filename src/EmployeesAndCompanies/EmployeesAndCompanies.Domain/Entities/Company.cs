@@ -3,7 +3,7 @@
     public class Company : BaseEntity
     {
         public static readonly Company Empty = new();
-        public string Name { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
         public int BusinessEntityId { get; set; }
         public BusinessEntity BusinessEntity { get; set; } = BusinessEntity.Empty;
         public int Size { get; set; }

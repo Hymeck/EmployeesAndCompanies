@@ -19,9 +19,17 @@ namespace EmployeesAndCompanies.Playground
             // await Names();
             // await EmployeeCompanies();
             // await EmployeePosts();
-            await AddEmployeeWithCompaniesAndPosts();
+            // await AddEmployeeWithCompaniesAndPosts();
+            await GetAllBusinessEntities();
         }
 
+        private static async Task GetAllBusinessEntities()
+        {
+            var repo = new BusinessEntityRepository(ConnectionString);
+            var entities = await repo.GetAllAsync();
+            WriteLine(string.Join('\n', entities));
+        }
+        
         private static async Task AddEmployeeWithCompaniesAndPosts()
         {
             var company1 = new Company { Id = 1};

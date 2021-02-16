@@ -97,7 +97,16 @@ namespace EmployeesAndCompanies.Persistence
 
             var affectedRowsCount =
                 await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);
-            return affectedRowsCount == 1;
+
+            var result = affectedRowsCount == 1;
+
+            if (result)
+            {
+                // todo: update companies
+                // todo: update posts
+            }
+            
+            return result;
         }
 
         public async Task<bool> DeleteAsync(int id) =>
@@ -111,7 +120,6 @@ namespace EmployeesAndCompanies.Persistence
                 return Employee.Empty;
 
             await reader.ReadAsync();
-            //todo: add select from m2m table
             return new Employee
             {
                 Id = reader.GetInt32(0),
@@ -208,7 +216,7 @@ namespace EmployeesAndCompanies.Persistence
             SqlParameter[] parameters =
             {
                 new("@employeeId", employeeId),
-                new("@@companyId", companyId),
+                new("@companyId", companyId),
             };
             var affectedRowsCount =
                 await SqlHelper.ExecuteNonQueryAsync(ConnectionString, query, parameters: parameters);

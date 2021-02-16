@@ -1,10 +1,40 @@
-﻿@{
-    ViewBag.Title = "Компании";
+﻿@model IEnumerable<CompanyDto>
+@{
+    ViewBag.Title = "Список компаний";
 }
 
 <h2>@ViewBag.Title</h2>
 <div class="row">
-    
-    <div><h3>Компании</h3></div>
-    
+    <div class="col-md-12">
+        <div>
+            <form method="get" asp-action="Add">
+                <button class="btn btn-success">Добавить</button>
+            </form>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Идентификатор</th>
+                <th>Название</th>
+                <th>Штат</th>
+                <th></th> @* for editing and deleting *@
+            </tr>
+            @foreach (var e in Model)
+            {
+                <tr>
+                    <td>@e.Id</td>
+                    <td>@e.Name</td>
+                    <td>@e.Size</td>
+                    <td>
+                        <form method="get" asp-action="Edit" asp-route-id="@e.Id">
+                            <button class="btn btn-info">Изменить</button>
+                        </form>
+
+                        <form method="post" asp-route-id="@e.Id" asp-action="Delete">
+                            <button class="btn btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
 </div>

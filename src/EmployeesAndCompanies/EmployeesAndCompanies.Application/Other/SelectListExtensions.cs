@@ -15,7 +15,24 @@ namespace EmployeesAndCompanies.Application.Other
                     Value = dto.Id.ToString()
                 }).ToArray();
 
-        public static SelectList ToSelectList(this IEnumerable<string> source) =>
-            new(source, "Value");
+        public static IList<SelectListItem> ToSelectListItemList(
+            this IEnumerable<CompanyDto> companies,
+            IEnumerable<CompanyDto> employeeCompanies)
+        {
+            var companyQueue = new Queue<SelectListItem>();
+            // todo: make it more efficient? (O(n^2) -> O(n))
+            foreach (var company in companies)
+            {
+                companyQueue.Enqueue(employeeCompanies.Any(employeeCompany => company.Id == employeeCompany.Id)
+                    ? new SelectListItem(company.Name, company.Id.ToString(), selected: true)
+                    : new SelectListItem(company.Name, company.Id.ToString(), selected: false));
+            }
+
+            return companyQueue.ToArray();
+        }
+
+        public static SelectList ToSelectList(this IEnumerable<BusinessEntityDto> source) =>
+            new (source, "value", "text");
+        
     }
 }

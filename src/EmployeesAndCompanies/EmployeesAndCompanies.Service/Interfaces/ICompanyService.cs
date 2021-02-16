@@ -8,5 +8,9 @@ namespace EmployeesAndCompanies.Service.Interfaces
     {
         Task<IEnumerable<CompanyDto>> GetAllAsync();
         Task<IReadOnlyCollection<string>> GetNamesAsync();
+        Task<bool> AddAsync(CompanyDto dto);
+        Task<bool> EditAsync(CompanyDto dto);
+        Task<bool> DeleteAsync(int id);
+        Task<CompanyDto> GetAsync(int id);
     }
 }
